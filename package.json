@@ -1,0 +1,44 @@
+{
+  "name": "industrialcare",
+  "private": true,
+  "version": "1.0.0",
+  "description": "IndustrialCare - Cloud-Based Industrial Machine Maintenance and Warehouse Inventory Management System (React + Firebase)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "functions:build": "npm --prefix functions run build",
+    "seed": "node scripts/seed.mjs",
+    "create-staff": "node scripts/create-staff.mjs",
+    "emulators": "firebase emulators:start",
+    "test": "vitest run",
+    "test:functions": "npm --prefix functions run build && npm --prefix functions test",
+    "backend:install": "npm --prefix backend install",
+    "backend:build": "npm --prefix backend run build"
+  },
+  "dependencies": {
+    "firebase": "^12.0.0",
+    "lucide-react": "^0.462.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.13.3"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.10",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "firebase-admin": "^13.0.0",
+    "jsdom": "^31.0.1",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.9"
+  }
+}

@@ -1,0 +1,28 @@
+rules_version = '2';
+
+// ============================================================================
+// IndustrialCare - Firebase Storage Security Rules
+// Complaint photographs live at complaints/{workerUid}/{file}
+//  - only the Factory Worker who owns the folder can upload (images only, < 5 MB)
+//  - only that worker and the Maintenance Team can read
+//  - files are immutable once uploaded
+// ============================================================================
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    match /complaints/{uid}/{fileName} {
+      allow create: if request.auth != null
+                    && request.auth.token.role == 'worker'
+                    && request.auth.uid == uid
+                    && request.resource.size < 5 * 1024 * 1024
+                    && request.resource.contentType.matches('image/.*');
+      allow read: if request.auth != null
+                  && (request.auth.uid == uid || request.auth.token.role == 'maintenance');
+      allow update, delete: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
