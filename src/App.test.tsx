@@ -147,6 +147,10 @@ describe('startup + authentication UI', () => {
 
   it('sign-up sends only name/badge/email/password (never a role) to the backend', async () => {
     const user = userEvent.setup();
+    let finishRegistration: ((profile: any) => void) | undefined;
+    svc.registerFactoryWorker.mockImplementationOnce(
+      () => new Promise((resolve) => { finishRegistration = resolve; })
+    );
     render(<App />);
     await user.click(await screen.findByText('Create an account'));
     await user.type(screen.getByPlaceholderText('e.g. Sam Carter'), 'Sam Carter');
@@ -155,6 +159,8 @@ describe('startup + authentication UI', () => {
     await user.type(screen.getByPlaceholderText('Enter password'), 'Str0ngPass!');
     await user.type(screen.getByPlaceholderText('Re-enter password'), 'Str0ngPass!');
     await user.click(screen.getByRole('button', { name: 'Create Account' }));
+    expect(screen.getByRole('status').textContent).toContain('your registration will be sent only once');
+    finishRegistration?.({ uid: 'new', badgeId: 'FW-02', name: 'Sam Carter', email: 'sam@x.io', role: 'worker' });
     await waitFor(() => expect(svc.registerFactoryWorker).toHaveBeenCalledTimes(1));
     expect(svc.registerFactoryWorker).toHaveBeenCalledWith({ name: 'Sam Carter', badgeId: 'FW-02', email: 'sam@x.io', password: 'Str0ngPass!' });
     expect(await screen.findByText('FACTORY FLOOR CONTROL PANEL')).toBeTruthy();

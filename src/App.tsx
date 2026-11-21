@@ -421,6 +421,13 @@ const LoginView = ({ onSignIn, onSignUp, onResetPassword, initialError }) => {
             </div>
           )}
 
+          {busy && authMode === 'signup' && (
+            <p className="mb-4 text-xs text-[#94A3B8]" role="status" aria-live="polite">
+              Connecting to the backend. A sleeping free service may take up to a minute to wake;
+              your registration will be sent only once.
+            </p>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {authMode !== 'forgot' && (
               <div>
@@ -560,7 +567,9 @@ const LoginView = ({ onSignIn, onSignUp, onResetPassword, initialError }) => {
               className="w-full py-3 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#0284C7] hover:from-[#1D4ED8] hover:to-[#0369A1] text-white text-sm font-bold shadow-lg shadow-blue-600/25 transition disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {busy
-                ? 'Please wait…'
+                ? authMode === 'signup'
+                  ? 'Connecting to backend…'
+                  : 'Please wait…'
                 : authMode === 'signin'
                 ? 'Sign In'
                 : authMode === 'signup'

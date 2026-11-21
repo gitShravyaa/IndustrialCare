@@ -30,4 +30,5 @@ See [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md) for exact local and deployment st
 - The Express API verifies Firebase ID tokens for every authenticated operation.
 - Server-side role checks, validation and Firestore transactions are retained from the original backend logic.
 - Keep Firestore rules restrictive. Never put Admin SDK credentials in frontend variables or commit credential files.
-- Configure `ALLOWED_ORIGINS` on Render to the exact deployed frontend origin.
+- Set Render's `ALLOWED_ORIGINS` to the exact production Vercel origin (scheme and hostname only, no path). Multiple origins, such as a custom domain and a Vercel deployment domain, can be comma-separated. Preview deployments must also be listed explicitly if they need API access.
+- Worker registration checks `/health` with bounded retries to allow Render Free to wake. The registration request itself is sent once and is never automatically retried.

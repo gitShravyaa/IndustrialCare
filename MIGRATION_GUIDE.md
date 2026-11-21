@@ -23,7 +23,7 @@ This version keeps the existing React/Vite frontend, Firebase Authentication, Fi
 3. Build command: `npm install && npm run build`; Start command: `npm start`.
 4. Set `FIREBASE_PROJECT_ID=industrialcare`.
 5. Set `FIREBASE_SERVICE_ACCOUNT_JSON` to the full service-account JSON contents (secret environment variable).
-6. Set `ALLOWED_ORIGINS` to your deployed frontend origin (for example `https://YOUR-SITE.web.app`).
+6. Set `ALLOWED_ORIGINS` to the exact deployed frontend origin (for example `https://your-project.vercel.app`, with no path). List multiple allowed origins as a comma-separated value; include each production hostname and any preview hostname that should access the API.
 7. After Render deploys, copy its HTTPS service URL.
 8. In the frontend `.env`, set `VITE_API_BASE_URL` to that URL, then run `npm run build` and deploy Hosting with Firebase CLI.
 

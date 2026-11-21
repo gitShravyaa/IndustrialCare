@@ -1,6 +1,6 @@
 
 import express, { type Request, type Response, type NextFunction } from 'express';
-import cors from 'cors';
+import cors, { type CorsOptions } from 'cors';
 import { getAuth } from 'firebase-admin/auth';
 import { HttpsError } from 'firebase-functions/v2/https';
 
@@ -25,26 +25,31 @@ import './common';
 const app = express();
 const port = Number(process.env.PORT || 8080);
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || '')
+const allowedOrigins = new Set((process.env.ALLOWED_ORIGINS || '')
   .split(',')
   .map((value) => value.trim())
-  .filter(Boolean);
+  .filter(Boolean)
+  .map((value) => value.replace(/\/+$/, '')));
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (
-        !origin ||
-        allowedOrigins.length === 0 ||
-        allowedOrigins.includes(origin)
-      ) {
-        return callback(null, true);
-      }
+if (allowedOrigins.size === 0) {
+  console.warn('ALLOWED_ORIGINS is empty; browser requests with an Origin header will be denied.');
+}
 
-      return callback(new Error('Origin not allowed by CORS.'));
-    },
-  })
-);
+const corsOptions: CorsOptions = {
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(null, false);
+  },
+  methods: ['GET', 'HEAD', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 204,
+};
+
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '1mb' }));
 
