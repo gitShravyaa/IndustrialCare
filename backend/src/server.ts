@@ -25,15 +25,18 @@ import './common';
 const app = express();
 const port = Number(process.env.PORT || 8080);
 
-const allowedOrigins = new Set((process.env.ALLOWED_ORIGINS || '')
-  .split(',')
-  .map((value) => value.trim())
-  .filter(Boolean)
-  .map((value) => value.replace(/\/+$/, '')));
-
-if (allowedOrigins.size === 0) {
-  console.warn('ALLOWED_ORIGINS is empty; browser requests with an Origin header will be denied.');
-}
+const productionFrontendOrigin = 'https://industrial-care.vercel.app';
+const allowedOrigins = new Set([
+  productionFrontendOrigin,
+  ...(process.env.NODE_ENV === 'production'
+    ? []
+    : ['http://localhost:5173', 'http://127.0.0.1:5173']),
+  ...(process.env.ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .map((value) => value.replace(/\/+$/, '')),
+]);
 
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
